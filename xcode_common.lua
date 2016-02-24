@@ -951,6 +951,7 @@
 
 		_p(2,'%s /* %s */ = {', cfg.xcode.targetid, cfg.buildcfg)
 		_p(3,'isa = XCBuildConfiguration;')
+		xcodePrintUserConfigReferences(3,cfg,tr,'target')
 		_p(3,'buildSettings = {')
 		printSettingsTable(4, settings)
 		_p(3,'};')
@@ -1115,6 +1116,7 @@
 
 		_p(2,'%s /* %s */ = {', cfg.xcode.projectid, cfg.buildcfg)
 		_p(3,'isa = XCBuildConfiguration;')
+		xcodePrintUserConfigReferences(3,cfg,tr,'project')
 		_p(3,'buildSettings = {')
 		printSettingsTable(4, settings)
 		_p(3,'};')
