@@ -41,6 +41,12 @@
 		kind = "list",
 	}
 
+	p.api.register {
+		name = "xcodeweakframeworks",
+		scope = "config",
+		kind = "list",
+	}
+
 
 --
 -- Register the Xcode exporters.
