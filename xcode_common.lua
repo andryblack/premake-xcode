@@ -215,6 +215,22 @@
 		end
 	end
 
+	local printAttributesTable
+
+	local function printAttribute(level, name, value)
+		if type(value) == 'function' then
+			value(level, name)
+		elseif type(value) ~= 'table' then
+			_p(level, '%s = %s;', stringifySetting(name), value)
+		--elseif #value == 1 then
+			--_p(level, '%s = %s;', stringifySetting(name), stringifySetting(value[1]))
+		elseif #value >= 1 then
+			_p(level, '%s = {', stringifySetting(name))
+			printAttributesTable(level+1,value)
+			_p(level, '};')
+		end
+	end
+
 	local function printSettingsTable(level, settings)
 		-- Maintain alphabetic order to be consistent
 		local keys = table.keys(settings)
@@ -233,6 +249,14 @@
 		end
 	end
 
+	printAttributesTable = function(level, settings)
+		-- Maintain alphabetic order to be consistent
+		local keys = table.keys(settings)
+		table.sort(keys)
+		for _, k in ipairs(keys) do
+			printAttribute(level, k, settings[k])
+		end
+	end
 --
 -- Return the Xcode product type, based target kind.
 --
@@ -355,6 +379,7 @@
 			-- attach it to the project
 			prj.xcode = {}
 			prj.xcode.projectnode = node
+			node.xcode_attributes = prj.xcodeattributes
 		end
 	end
 
@@ -705,6 +730,18 @@
 		_p('/* Begin PBXProject section */')
 		_p(2,'08FB7793FE84155DC02AAC07 /* Project object */ = {')
 		_p(3,'isa = PBXProject;')
+		_p(3,'attributes = {')
+			_p(4,'TargetAttributes = {')
+				for _, node in ipairs(tr.products.children) do
+					if node.xcode_attributes and not table.isempty(node.xcode_attributes)  then
+						_p(5,'%s = {', node.targetid)
+						printAttributesTable(6,node.xcode_attributes)
+						_p(5,'};')
+					end
+				end
+			_p(4,'};')
+		
+		_p(3,'};')
 		_p(3,'buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "%s" */;', tr.name)
 		_p(3,'compatibilityVersion = "Xcode 3.2";')
 		_p(3,'hasScannedForEncodings = 1;')

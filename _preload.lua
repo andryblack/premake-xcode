@@ -47,6 +47,11 @@
 		kind = "list",
 	}
 
+	p.api.register {
+		name = "xcodeattributes",
+		scope = "project",
+		kind = "key-string"
+	}
 
 --
 -- Register the Xcode exporters.
